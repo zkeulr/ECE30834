@@ -134,11 +134,16 @@ void Scene::writeName(int screenWidth, int screenHeight, int color)
     drawRectangle(80 + barWidth, screenHeight / 4, barHeight, barWidth);
     drawRectangle(80 + barWidth, screenHeight / 2, barHeight, barWidth);
     drawRectangle(80 + barWidth, screenHeight * 3 / 4, barHeight, barWidth);
-    drawRectangle(80 + barWidth, screenHeight / 4, screenHeight - 80, barWidth);
+    drawRectangle(80 + barWidth, screenHeight / 4, screenHeight / 2, 40);
 
     // K
+    drawRectangle(120 + 2 * barWidth, screenHeight / 4, screenHeight / 2 + barHeight, 40);
 
     // E
+    drawRectangle(120 + 3 * barWidth, screenHeight / 4, barHeight, barWidth);
+    drawRectangle(120 + 3 * barWidth, screenHeight / 2, barHeight, barWidth);
+    drawRectangle(120 + 3 * barWidth, screenHeight * 3 / 4, barHeight, barWidth);
+    drawRectangle(120 + 3 * barWidth, screenHeight / 4, screenHeight / 2, 40);
 
     fb->redraw();
     fb->SaveTiff("name.tiff");
