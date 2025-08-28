@@ -16,6 +16,7 @@ $(TARGET): $(OBJECTS)
 git: 
 	git add .
 	git commit --allow-empty-message -m ""
+	git push
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
