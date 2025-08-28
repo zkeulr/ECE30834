@@ -13,5 +13,9 @@ $(TARGET): $(OBJECTS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+git: 
+	git add .
+	git commit --allow-empty-message
+
 clean:
 	rm -f $(OBJECTS) $(TARGET)
