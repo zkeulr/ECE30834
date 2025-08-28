@@ -126,8 +126,8 @@ void Scene::writeName(int screenWidth, int screenHeight, int color)
 
     // Z
     drawRectangle(40, screenHeight / 4, barHeight, barWidth);
-    drawLine(40, screenHeight * 3 / 4, 40 + barWidth, screenHeight / 4 + barHeight);
-    // drawLine();
+    drawLine(40, screenHeight * 3 / 4, barWidth, screenHeight / 4 + barHeight);
+    drawLine(40 + 40, screenHeight * 3 / 4, 40 + barWidth, screenHeight / 4 + barHeight);
     drawRectangle(40, screenHeight * 3 / 4, barHeight, barWidth);
 
     // E
