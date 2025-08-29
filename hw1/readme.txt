@@ -1,13 +1,14 @@
 # Assignment 1
 
-This program was compiled on Arch Linux x86_64 11th Gen Intel i7-1195G7 (8) @ 5GHz
-Wayland. It will not compile on Windows. 
+This program was compiled on Arch Linux x86_64 11th Gen Intel i7-1195G7 (8) @ 5GHz.
+Windows executable was tested with Wine. 
 
 ## Extra Credit Attempted
 - Triangle
 
 ## Resources Used
-- [Claude](https://claude.ai) used to calculate animation speed and capture video. 
+- [Claude](https://claude.ai) used to draft Wayland-compatible Makefile record target,
+    and Windows cross-compilation guidance. 
 - [Course code](https://www.cs.purdue.edu/cgvlab/courses/334/Fall_2025/Code/)
 - [FLTK Docs](https://www.fltk.org/documentation.php)
 - [Wikipedia](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)
