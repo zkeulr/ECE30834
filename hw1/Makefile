@@ -18,8 +18,11 @@ git:
 	git commit --allow-empty-message -m ""
 	git push
 
-capture:
-	ffmpeg -f x11grab -framerate 30 -t 10.5 -s 1920x1080 -i :0.0 -c:v libx264 -preset medium -crf 23 output.mp4 ./$(TARGET)
+capture: $(TARGET)
+	./$(TARGET) &
+	sleep 1
+	ffmpeg -f x11grab -framerate 30 -t 10.5 -s 640x480 -i $$DISPLAY -c:v libx264 -preset medium -crf 23 name.mp4
+	pkill -f "./$(TARGET)" || true
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
