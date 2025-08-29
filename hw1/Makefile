@@ -20,8 +20,10 @@ git:
 
 capture: $(TARGET)
 	./$(TARGET) &
-	sleep 1
-	ffmpeg -f x11grab -framerate 30 -t 10.5 -s 640x480 -i $$DISPLAY -c:v libx264 -preset medium -crf 23 name.mp4
+	sleep 0.5
+	recordmydesktop --width=640 --height=480 --fps=30 --delay=0 --no-sound --overwrite -o name.ogv
+	ffmpeg -i name_video.ogv -c:v libx264 -preset medium -crf 23 name.mp4
+	rm name.ogv
 	pkill -f "./$(TARGET)" || true
 
 clean:
