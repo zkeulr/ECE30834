@@ -18,14 +18,13 @@ git:
 	git commit --allow-empty-message -m ""
 	git push
 
-capture: $(TARGET)
+record: $(TARGET)
+	rm -f name.mp4
 	./$(TARGET) &
-	sleep 0.5
-	timeout 10.5s recordmydesktop --width=640 --height=480 --fps=30 --delay=0s --no-sound --overwrite -o name.ogv
-	ffmpeg -i name.ogv -c:v libx264 -preset medium -crf 23 name.mp4
-	rm name.ogv
-	pkill -f "./$(TARGET)" || true
-	
+	wf-recorder -g "$$(swaymsg -t get_tree \
+	  | jq -r '.. | select(.name? == "Name")? \
+	  | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" -f name.mp4
+
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 	clear

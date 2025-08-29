@@ -41,6 +41,8 @@ void animateCallback(void *)
 int main(int argc, char **argv)
 {
     animationScene = new Scene();
+    animationScene->fb->label("Name");
+
     animationScene->fb->show();
     currentOffset = -animationScene->fb->w;
     completedPasses = 0;

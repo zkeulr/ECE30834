@@ -1,6 +1,7 @@
 # Assignment 1
 
-This program was compiled on Arch Linux x86_64 11th Gen Intel i7-1195G7 (8) @ 5GHz. 
+This program was compiled on Arch Linux x86_64 11th Gen Intel i7-1195G7 (8) @ 5GHz
+Wayland. It will not compile on Windows. 
 
 ## Extra Credit Attempted
 - Triangle
