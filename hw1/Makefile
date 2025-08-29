@@ -21,11 +21,11 @@ git:
 capture: $(TARGET)
 	./$(TARGET) &
 	sleep 0.5
-	recordmydesktop --width=640 --height=480 --fps=30 --delay=0 --no-sound --overwrite -o name.ogv
-	ffmpeg -i name_video.ogv -c:v libx264 -preset medium -crf 23 name.mp4
+	timeout 10.5s recordmydesktop --width=640 --height=480 --fps=30 --delay=0s --no-sound --overwrite -o name.ogv
+	ffmpeg -i name.ogv -c:v libx264 -preset medium -crf 23 name.mp4
 	rm name.ogv
 	pkill -f "./$(TARGET)" || true
-
+	
 clean:
 	rm -f $(OBJECTS) $(TARGET)
 	clear
