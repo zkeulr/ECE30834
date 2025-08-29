@@ -13,11 +13,6 @@ $(TARGET): $(OBJECTS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-git: 
-	git add .
-	git commit --allow-empty-message -m ""
-	git push
-
 record: $(TARGET)
 	rm -f name.mp4
 	./$(TARGET) &
@@ -25,12 +20,10 @@ record: $(TARGET)
 	  | jq -r '.. | select(.name? == "Name")? \
 	  | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" -f name.mp4
 
-windows: 
-	x86_64-w64-mingw32-g++ -std=c++11 -Wall \
-		src/*.cpp -o a1.exe \
-		-I/path/to/fltk/include \
-		-L/path/to/fltk/lib \
-		-lfltk -lfltk_gl -lopengl32 -lglu32 -ltiff
+git: 
+	git add .
+	git commit --allow-empty-message -m ""
+	git push
 
 clean:
 	rm -f $(OBJECTS) $(TARGET)
