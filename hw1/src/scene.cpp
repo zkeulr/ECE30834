@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <strstream>
+#include <thread>
+#include <chrono>
 
 Scene *scene;
 
@@ -17,7 +19,9 @@ Scene::Scene()
     fb = new FrameBuffer(u0, v0, screenWidth, screenHeight);
     fb->Set(0xFFFFFFFF);
 
-    writeName(screenWidth, screenHeight);
+    writeName();
+    fb->SaveTiff("name.tiff");
+    scrollName();
 
     fb->show();
 }
@@ -30,31 +34,31 @@ Scene::Scene()
  */
 void Scene::drawRectangle(int x, int y, int h, int w, int color)
 {
+    int x0 = x;
+    int x1 = x + w - 1;
+    int y0 = y;
+    int y1 = y + h - 1;
+
     // top
-    for (int i = x; i < x + w; i++)
+    for (int i = x0; i <= x1; ++i)
     {
-        fb->Set(i, y, color);
+        fb->Set(i, y0, color);
     }
-
     // right
-    for (int i = y + h; i > y; i--)
+    for (int i = y0; i <= y1; ++i)
     {
-        fb->Set(x + w, i, color);
+        fb->Set(x1, i, color);
     }
-
     // bottom
-    for (int i = x; i < x + w; i++)
+    for (int i = x0; i <= x1; ++i)
     {
-        fb->Set(i, y + h, color);
+        fb->Set(i, y1, color);
     }
-
     // left
-    for (int i = y + h; i > y; i--)
+    for (int i = y0; i <= y1; ++i)
     {
-        fb->Set(x, i, color);
+        fb->Set(x0, i, color);
     }
-
-    fb->redraw();
 }
 
 /**
@@ -78,7 +82,6 @@ void Scene::drawCircle(int h, int k, int r, int color)
             }
         }
     }
-    fb->redraw();
 }
 
 void Scene::drawLine(int x1, int y1, int x2, int y2, int color)
@@ -108,57 +111,67 @@ void Scene::drawLine(int x1, int y1, int x2, int y2, int color)
             y1 += sy;
         }
     }
-
-    fb->redraw();
 }
 
-void Scene::writeName(int screenWidth, int screenHeight, int color)
+void Scene::writeName(int horizontalOffset, int color)
 {
+
+    int screenWidth = fb->w;
+    int screenHeight = fb->h;
 
     /*
     == == |// ==
     // |= |<  |=
-    == == |\\ ==
+    == == |\\ == o
     */
 
     int barWidth = screenWidth / 4 - screenWidth / 16;
     int barHeight = screenHeight / 16;
 
     // Z
-    drawRectangle(40, screenHeight / 4, barHeight, barWidth);
-    drawLine(40, screenHeight * 3 / 4, barWidth, screenHeight / 4 + barHeight);
-    drawLine(80, screenHeight * 3 / 4, 40 + barWidth, screenHeight / 4 + barHeight);
-    drawRectangle(40, screenHeight * 3 / 4, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 10, screenHeight / 4, barHeight, barWidth);
+    drawLine(horizontalOffset + 10, screenHeight * 3 / 4, horizontalOffset + barWidth - 30, screenHeight / 4 + barHeight);
+    drawLine(horizontalOffset + 50, screenHeight * 3 / 4, horizontalOffset + 40 + barWidth - 30, screenHeight / 4 + barHeight);
+    drawRectangle(horizontalOffset + 10, screenHeight * 3 / 4, barHeight, barWidth);
 
     // E
-    drawRectangle(80 + barWidth, screenHeight / 4, barHeight, barWidth);
-    drawRectangle(80 + barWidth, screenHeight / 2, barHeight, barWidth);
-    drawRectangle(80 + barWidth, screenHeight * 3 / 4, barHeight, barWidth);
-    drawRectangle(80 + barWidth, screenHeight / 4, screenHeight / 2, 40);
+    drawRectangle(horizontalOffset + 50 + barWidth, screenHeight / 4, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 50 + barWidth, screenHeight / 2, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 50 + barWidth, screenHeight * 3 / 4, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 50 + barWidth, screenHeight / 4, screenHeight / 2, 40);
 
     // K
-    drawRectangle(120 + 2 * barWidth, screenHeight / 4, screenHeight / 2 + barHeight, 40);
+    drawRectangle(horizontalOffset + 90 + 2 * barWidth, screenHeight / 4, screenHeight / 2 + barHeight, 40);
+    drawLine(horizontalOffset + 90 + 40 + 2 * barWidth, screenHeight / 2 + barHeight, horizontalOffset + 90 + 3 * barWidth, screenHeight / 4);
+    drawLine(horizontalOffset + 90 + 40 + 2 * barWidth, screenHeight / 2, horizontalOffset + 90 + 3 * barWidth, screenHeight / 4);
+    drawTriangle(horizontalOffset + 90 + 40 + 2 * barWidth, screenHeight / 2 + barHeight, screenHeight / 4, barWidth - 40);
 
     // E
-    drawRectangle(140 + 3 * barWidth, screenHeight / 4, barHeight, barWidth);
-    drawRectangle(140 + 3 * barWidth, screenHeight / 2, barHeight, barWidth);
-    drawRectangle(140 + 3 * barWidth, screenHeight * 3 / 4, barHeight, barWidth);
-    drawRectangle(140 + 3 * barWidth, screenHeight / 4, screenHeight / 2, 40);
+    drawRectangle(horizontalOffset + 110 + 3 * barWidth, screenHeight / 4, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 110 + 3 * barWidth, screenHeight / 2, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 110 + 3 * barWidth, screenHeight * 3 / 4, barHeight, barWidth);
+    drawRectangle(horizontalOffset + 110 + 3 * barWidth, screenHeight / 4, screenHeight / 2, 40);
+
+    // .
+    drawCircle(horizontalOffset + 615, 380, 10);
 
     fb->redraw();
-    fb->SaveTiff("name.tiff");
 }
 
 void Scene::scrollName(int color)
 {
     int frameRate = 30; // Hz
-    int duration = 10;  // s
+    int frameDelay = 1000 / frameRate;
+    int duration = 10; // s
+    int screenWidth = fb->w;
 
-    fb->Set(0xFFFFFFFF);
+    for (int i = 0; i < screenWidth; i++)
+    {
+        fb->Set(0xFFFFFFFF);
+        writeName(i, color);
 
-    // this is very simple. just white out page and writeName
-    // some amount of pixels over, as determined by frameRate
-    // and duration
+        std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
+    }
 }
 
 void Scene::drawTriangle(int x, int y, int h, int w, int color)
