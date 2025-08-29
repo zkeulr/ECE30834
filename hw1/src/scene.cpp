@@ -18,12 +18,6 @@ Scene::Scene()
 
     fb = new FrameBuffer(u0, v0, screenWidth, screenHeight);
     fb->Set(0xFFFFFFFF);
-
-    writeName();
-    fb->SaveTiff("name.tiff");
-    scrollName();
-
-    fb->show();
 }
 
 /**
@@ -154,26 +148,12 @@ void Scene::writeName(int horizontalOffset, int color)
 
     // .
     drawCircle(horizontalOffset + 615, 380, 10);
-
     fb->redraw();
 }
 
-void Scene::scrollName(int color)
-{
-    int frameRate = 30; // Hz
-    int frameDelay = 1000 / frameRate;
-    int duration = 10; // s
-    int screenWidth = fb->w;
-
-    for (int i = 0; i < screenWidth; i++)
-    {
-        fb->Set(0xFFFFFFFF);
-        writeName(i, color);
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(frameDelay));
-    }
-}
-
+// alternate more flexible approach is use three drawLines
+// and three points, but since not specified will assume
+// right triangularity
 void Scene::drawTriangle(int x, int y, int h, int w, int color)
 {
     // bottom
