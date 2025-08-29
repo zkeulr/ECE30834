@@ -25,6 +25,9 @@ git:
 	git commit --allow-empty-message -m ""
 	git push
 
+zip: 
+	zip -r $(TARGET).zip .
+
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) $(TARGET).zip
 	clear
