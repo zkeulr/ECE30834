@@ -7,7 +7,7 @@ This program was compiled on Arch Linux x86_64 11th Gen Intel i7-1195G7 (8) @ 5G
 
 ## Resources Used
 - [Claude](https://claude.ai) used to draft Wayland-compatible Makefile record target,
-    and Windows cross-compilation guidance. 
+    and Windows cross-compilation guidance (which was ultimately abandoned). 
 - [Course code](https://www.cs.purdue.edu/cgvlab/courses/334/Fall_2025/Code/)
 - [FLTK Docs](https://www.fltk.org/documentation.php)
 - [Wikipedia](https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm)
