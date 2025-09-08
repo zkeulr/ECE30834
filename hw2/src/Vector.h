@@ -1,6 +1,7 @@
 #pragma once
 #include <ostream>
 #include "Direction.h"
+#include "Point.h"
 
 class Vector
 {
@@ -15,10 +16,10 @@ public:
     Vector normalized();
     float length();
     float operator*(Vector v);
-    float operator^(Vector v1);
+    float operator^(Vector v);
     Vector operator/(float scalar);
     Vector operator*(float scalar);
     Vector operator+(Vector v);
     Vector operator-(Vector v);
-    Vector rotated(Vector origin, Direction direction, float angle_degrees);
+    // Vector rotated(Point origin, Direction direction, float angle_degrees);
 };
