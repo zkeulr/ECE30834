@@ -1,6 +1,5 @@
 #pragma once
 #include <ostream>
-#include "Direction.h"
 #include "Point.h"
 
 class Vector
@@ -14,9 +13,8 @@ public:
     friend std::ostream &operator<<(std::ostream &ostr, Vector v);
     friend std::ostream &operator>>(std::ostream &ostr, Vector v);
     Vector normalized();
-    float length();
     float operator*(Vector v);
-    float operator^(Vector v);
+    Vector operator^(Vector v);
     Vector operator/(float scalar);
     Vector operator*(float scalar);
     Vector operator+(Vector v);
