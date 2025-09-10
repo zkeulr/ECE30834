@@ -13,7 +13,6 @@ Vector::Vector(float x, float y, float z)
 
 Vector Vector::operator+(Vector v)
 {
-
     Vector ret;
     Vector &u = (*this);
     for (int i = 0; i < 3; i++)
@@ -26,7 +25,6 @@ Vector Vector::operator+(Vector v)
 
 Vector Vector::operator-(Vector v)
 {
-
     Vector ret;
     Vector &u = (*this);
     for (int i = 0; i < 3; i++)
@@ -39,19 +37,16 @@ Vector Vector::operator-(Vector v)
 
 std::ostream &operator<<(std::ostream &ostr, Vector v)
 {
-
     return ostr << v[0] << " " << v[1] << " " << v[2];
 }
 
 float &Vector::operator[](int i)
 {
-
     return xyz[i];
 }
 
 float Vector::operator*(Vector v)
 {
-
     Vector &u = *this;
 
     float ret = u[0] * v[0] + u[1] * v[1] + u[2] * v[2];

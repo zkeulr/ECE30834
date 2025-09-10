@@ -119,7 +119,7 @@ void Matrix::setRotationMatrix(Direction axis, float angle_degrees)
     *this = createRotationMatrix(axis, angle_degrees);
 }
 
-std::ostream &operator<<(std::ostream &ostr, const Matrix &m)
+std::ostream &operator<<(std::ostream &ostr, Matrix m)
 {
     for (int i = 0; i < 3; i++)
     {
@@ -137,7 +137,7 @@ std::ostream &operator<<(std::ostream &ostr, const Matrix &m)
     return ostr;
 }
 
-std::istream &operator>>(std::istream &istr, Matrix &m)
+std::istream &operator>>(std::istream &istr, Matrix m)
 {
     for (int i = 0; i < 3; i++)
     {

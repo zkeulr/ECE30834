@@ -19,6 +19,6 @@ public:
     Matrix transposed();
     Vector operator*(Vector v);
     Matrix operator*(Matrix m);
-    friend std::ostream &operator<<(std::ostream &ostr, Matrix v);
-    friend std::istream &operator>>(std::istream &istr, Matrix &m);
+    friend std::ostream &operator<<(std::ostream &ostr, Matrix m);
+    friend std::istream &operator>>(std::istream &istr, Matrix m);
 };
