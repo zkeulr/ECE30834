@@ -26,66 +26,59 @@ Scene::Scene()
     fb = new FrameBuffer(u0, v0, screenWidth, screenHeight);
     fb->Set(0xFFFFFFFF);
 
-    Direction direction = Direction(-3.14, 3.14, 2.73);
+    Direction direction = Direction(-4, 3, 2);
     Point originalPoint = Point(1, 1, 1);
     Point origin = Point(0, 0, 0);
 
-    // Store rotation data
     std::vector<double> angles;
     std::vector<double> xCoords;
     std::vector<double> yCoords;
     std::vector<double> zCoords;
 
-    // Rotate 360 degrees with 2 degree increments
-    for (int angle_degrees = 0; angle_degrees <= 360; angle_degrees += 2)
+    for (int angle = 0; angle <= 720; angle += 2)
     {
-        Point rotatedPoint = originalPoint.rotated(origin, direction, angle_degrees);
-        angles.push_back(angle_degrees);
+        Point rotatedPoint = originalPoint.rotated(origin, direction, angle);
+
+        std::cout << "x: "
+                  << rotatedPoint.xyz[0]
+                  << " y: " << rotatedPoint.xyz[1]
+                  << " z: " << rotatedPoint.xyz[2]
+                  << std::endl;
+
+        angles.push_back(angle);
         xCoords.push_back(rotatedPoint.xyz[0]);
         yCoords.push_back(rotatedPoint.xyz[1]);
         zCoords.push_back(rotatedPoint.xyz[2]);
     }
 
-    // Find min/max values for scaling
-    double minVal = std::min({*std::min_element(xCoords.begin(), xCoords.end()),
-                              *std::min_element(yCoords.begin(), yCoords.end()),
-                              *std::min_element(zCoords.begin(), zCoords.end())});
-    double maxVal = std::max({*std::max_element(xCoords.begin(), xCoords.end()),
-                              *std::max_element(yCoords.begin(), yCoords.end()),
-                              *std::max_element(zCoords.begin(), zCoords.end())});
+    fb->SaveTiff("GRAPH.tiff");
+}
 
-    // Plot dimensions
-    int margin = 50;
-    int plotWidth = screenWidth - 2 * margin;
-    int plotHeight = screenHeight - 2 * margin;
+void Scene::drawLine(int x1, int y1, int x2, int y2, int color)
+{
+    int dx = abs(x2 - x1);
+    int dy = abs(y2 - y1);
+    int sx = (x1 < x2) ? 1 : -1;
+    int sy = (y1 < y2) ? 1 : -1;
+    int err = dx - dy;
 
-    // Draw axes
-    drawLine(margin, screenHeight - margin, screenWidth - margin, screenHeight - margin, 0xFF000000); // X axis
-    drawLine(margin, margin, margin, screenHeight - margin, 0xFF000000);                              // Y axis
-
-    // Plot the three curves
-    for (size_t i = 1; i < angles.size(); i++)
+    while (true)
     {
-        // Scale coordinates to screen space
-        int x1 = margin + (int)((angles[i - 1] / 360.0) * plotWidth);
-        int x2 = margin + (int)((angles[i] / 360.0) * plotWidth);
+        fb->Set(x1, y1, color);
 
-        // X coordinate curve (red)
-        int y1_x = screenHeight - margin - (int)(((xCoords[i - 1] - minVal) / (maxVal - minVal)) * plotHeight);
-        int y2_x = screenHeight - margin - (int)(((xCoords[i] - minVal) / (maxVal - minVal)) * plotHeight);
-        drawLine(x1, y1_x, x2, y2_x, 0xFFFF0000);
+        if (x1 == x2 && y1 == y2)
+            break;
 
-        // Y coordinate curve (green)
-        int y1_y = screenHeight - margin - (int)(((yCoords[i - 1] - minVal) / (maxVal - minVal)) * plotHeight);
-        int y2_y = screenHeight - margin - (int)(((yCoords[i] - minVal) / (maxVal - minVal)) * plotHeight);
-        drawLine(x1, y1_y, x2, y2_y, 0xFF00FF00);
-
-        // Z coordinate curve (blue)
-        int y1_z = screenHeight - margin - (int)(((zCoords[i - 1] - minVal) / (maxVal - minVal)) * plotHeight);
-        int y2_z = screenHeight - margin - (int)(((zCoords[i] - minVal) / (maxVal - minVal)) * plotHeight);
-        drawLine(x1, y1_z, x2, y2_z, 0xFF0000FF);
+        int e2 = 2 * err;
+        if (e2 > -dy)
+        {
+            err -= dy;
+            x1 += sx;
+        }
+        if (e2 < dx)
+        {
+            err += dx;
+            y1 += sy;
+        }
     }
-
-    // Save as TIFF
-    fb->SaveTiff("rotation_plot.tiff");
 }
