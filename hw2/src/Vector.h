@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include <istream>
 #include "Point.h"
 
 class Vector
@@ -11,7 +12,7 @@ public:
     Vector() {};
     float &operator[](int i);
     friend std::ostream &operator<<(std::ostream &ostr, Vector v);
-    friend std::ostream &operator>>(std::ostream &ostr, Vector v);
+    friend std::istream &operator>>(std::ostream &ostr, Vector v);
     Vector normalized();
     float operator*(Vector v);
     Vector operator^(Vector v);

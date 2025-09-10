@@ -21,6 +21,18 @@ Point::Point(Vector v)
     length = 0;
 }
 
-Point rotated(Point origin, Direction direction, float angle_degrees)
+Point Point::rotated(Point origin, Direction direction, float angle_degrees)
 {
+    Vector translated(xyz[0] - origin.xyz[0],
+                      xyz[1] - origin.xyz[1],
+                      xyz[2] - origin.xyz[2]);
+
+    Matrix rotationMatrix = Matrix::createRotationMatrix(direction, angle_degrees);
+    Vector rotatedVector = rotationMatrix * translated;
+
+    Point rotatedPoint(rotatedVector[0] + origin.xyz[0],
+                       rotatedVector[1] + origin.xyz[1],
+                       rotatedVector[2] + origin.xyz[2]);
+
+    return rotatedPoint;
 }

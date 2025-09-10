@@ -13,6 +13,7 @@ Direction::Direction(float x, float y, float z)
 
     length = std::numeric_limits<float>::infinity();
 }
+
 Direction::Direction(Vector v)
 {
     xyz[0] = v[0];
