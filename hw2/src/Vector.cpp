@@ -61,7 +61,6 @@ float Vector::operator*(Vector v)
 
 Vector Vector::operator/(float scalar)
 {
-
     Vector ret;
     Vector &v = *this;
     return Vector(v[0] / scalar, v[1] / scalar, v[2] / scalar);

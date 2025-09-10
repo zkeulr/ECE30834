@@ -8,3 +8,6 @@ Run with `./a2`.
 referenced for cross product formula. 
 - [Wikipedia](https://en.wikipedia.org/wiki/Rotation_matrix)
 referenced for rotation matrix formula. 
+- [Claude](https://claude.ai)
+used to generate matrix multiplication function and matrix I/O
+because I'm lazy. 

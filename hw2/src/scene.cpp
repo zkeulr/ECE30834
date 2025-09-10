@@ -27,7 +27,7 @@ Scene::Scene()
     fb->Set(0xFFFFFFFF);
 
     Direction direction = Direction(-4, 3, 2);
-    Point originalPoint = Point(1, 1, 1);
+    Point originalPoint = Point(1, 0, 1);
     Point origin = Point(0, 0, 0);
 
     std::vector<double> angles;
@@ -35,20 +35,33 @@ Scene::Scene()
     std::vector<double> yCoords;
     std::vector<double> zCoords;
 
+    // points
     for (int angle = 0; angle <= 720; angle += 2)
     {
         Point rotatedPoint = originalPoint.rotated(origin, direction, angle);
 
-        std::cout << "x: "
-                  << rotatedPoint.xyz[0]
-                  << " y: " << rotatedPoint.xyz[1]
-                  << " z: " << rotatedPoint.xyz[2]
-                  << std::endl;
+        std::cout
+            << "x: "
+            << rotatedPoint.xyz[0]
+            << " y: " << rotatedPoint.xyz[1]
+            << " z: " << rotatedPoint.xyz[2]
+            << std::endl;
 
         angles.push_back(angle);
         xCoords.push_back(rotatedPoint.xyz[0]);
         yCoords.push_back(rotatedPoint.xyz[1]);
         zCoords.push_back(rotatedPoint.xyz[2]);
+    }
+
+    int centerX = screenWidth / 2;
+    int centerY = screenHeight / 2;
+    int scale = 100;
+
+    for (int i = 0; i <= 360; i++)
+    {
+        fb->Set(50 + i, centerY + xCoords[i] * scale, 0xFF0000FF);
+        fb->Set(50 + i, centerY + yCoords[i] * scale, 0x000000FF);
+        fb->Set(50 + i, centerY + zCoords[i] * scale, 0x0000FFFF);
     }
 
     fb->SaveTiff("GRAPH.tiff");

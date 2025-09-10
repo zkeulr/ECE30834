@@ -1,11 +1,25 @@
 #include "Matrix.h"
 #include <cmath>
 
+Matrix::Matrix()
+{
+    rows[0] = Vector(0, 0, 0);
+    rows[1] = Vector(0, 0, 0);
+    rows[2] = Vector(0, 0, 0);
+}
+
 Matrix::Matrix(Vector row0, Vector row1, Vector row2)
 {
     rows[0] = row0;
     rows[1] = row1;
     rows[2] = row2;
+}
+
+Matrix Matrix::identity()
+{
+    rows[0] = Vector(1, 0, 0);
+    rows[1] = Vector(0, 1, 0);
+    rows[2] = Vector(0, 0, 1);
 }
 
 Vector &Matrix::operator[](int i)
@@ -33,6 +47,23 @@ Vector Matrix::operator*(Vector v)
     return ret;
 }
 
+Matrix Matrix::operator*(Matrix m)
+{
+    Matrix ret;
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            ret[i][j] = rows[i][0] * m.rows[0][j] +
+                        rows[i][1] * m.rows[1][j] +
+                        rows[i][2] * m.rows[2][j];
+        }
+    }
+
+    return ret;
+}
+
 Matrix Matrix::inverted()
 {
     Matrix ret;
@@ -46,6 +77,17 @@ Matrix Matrix::inverted()
     ret[0] = _a;
     ret[1] = _b;
     ret[2] = _c;
+
+    return ret;
+}
+
+Matrix Matrix::transposed()
+{
+    Matrix ret;
+
+    ret.rows[0] = getColumn(0);
+    ret.rows[1] = getColumn(1);
+    ret.rows[2] = getColumn(2);
 
     return ret;
 }
@@ -70,4 +112,39 @@ Matrix Matrix::createRotationMatrix(Direction axis, float angle_degrees)
     Vector row2(z * x * omc - y * s, z * y * omc + x * s, c + z * z * omc);
 
     return Matrix(row0, row1, row2);
+}
+
+void Matrix::setRotationMatrix(Direction axis, float angle_degrees)
+{
+    *this = createRotationMatrix(axis, angle_degrees);
+}
+
+std::ostream &operator<<(std::ostream &ostr, const Matrix &m)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        ostr << "[ ";
+        for (int j = 0; j < 3; j++)
+        {
+            ostr << m.rows[i][j];
+            if (j < 2)
+                ostr << ", ";
+        }
+        ostr << " ]";
+        if (i < 2)
+            ostr << std::endl;
+    }
+    return ostr;
+}
+
+std::istream &operator>>(std::istream &istr, Matrix &m)
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            istr >> m.rows[i][j];
+        }
+    }
+    return istr;
 }
