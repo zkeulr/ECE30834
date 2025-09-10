@@ -1,6 +1,7 @@
 #pragma once
-#include "Direction.h"
-#include "Vector.h"
+
+class Direction;
+class Vector;
 
 class Point
 {
