@@ -1,6 +1,7 @@
 #include <cmath>
 #include <fstream>
 #include "PlanarPinholeCamera.h"
+#include "framebuffer.h"
 #include "Matrix.h"
 
 PlanarPinholeCamera::PlanarPinholeCamera(float hfov, int _w, int _h)
@@ -67,25 +68,34 @@ void PlanarPinholeCamera::Translate(Vector tv)
 
 void PlanarPinholeCamera::Pan(float theta)
 {
-    a = a.rotated(Point(C), Direction(b), theta);
-    b = b.rotated(Point(C), Direction(b), theta);
-    c = c.rotated(Point(C), Direction(b), theta);
+    Direction up(-b);
+    Matrix R = Matrix::createRotationMatrix(up, theta);
+
+    a = R * a;
+    b = R * b;
+    c = R * c;
 }
 
 void PlanarPinholeCamera::Tilt(float theta)
 {
-    a = a.rotated(Point(C), Direction(a), theta);
-    b = b.rotated(Point(C), Direction(a), theta);
-    c = c.rotated(Point(C), Direction(a), theta);
+    Direction right(a);
+    Matrix R = Matrix::createRotationMatrix(right, theta);
+
+    a = R * a;
+    b = R * b;
+    c = R * c;
 }
 
 void PlanarPinholeCamera::Roll(float theta)
 {
-    Vector n = b ^ a;
+    Vector vd = a ^ b;
+    Direction view(vd.normalized());
 
-    a = a.rotated(Point(C), Direction(n), theta);
-    b = b.rotated(Point(C), Direction(n), theta);
-    c = c.rotated(Point(C), Direction(n), theta);
+    Matrix R = Matrix::createRotationMatrix(view, theta);
+
+    a = R * a;
+    b = R * b;
+    c = R * c;
 }
 
 void PlanarPinholeCamera::Zoom(float zoom_scalar)
@@ -145,4 +155,45 @@ void PlanarPinholeCamera::LoadTextFile(const char *filename)
 
     file.close();
     return;
+}
+
+// visualize (draw) "this" camera (on which you are calling visualize)
+//    as seen by visPPC
+//	  into fb
+//    IMPORTANT: draw the camera to scale such that the focal length be visF
+
+// elements that need to be shown:
+// C
+// a
+// b
+// c
+// focal length visF
+
+void PlanarPinholeCamera::Visualize(PlanarPinholeCamera *visPPC, FrameBuffer *fb, float visF)
+{
+
+    // draw image frame as a 3D rectangle projected with visPPC onto fb
+    // (4 segments)
+    Vector topLeft = C + c;
+    Vector topRight = topLeft + a * (float)w;
+    Vector bottomRight = topRight + b * (float)h;
+    Vector bottomleft = bottomRight - a * (float)w;
+    // render 4 3D segments between these 4 corners BUT SCALED DOWN
+    float f = GetF();
+    //	SCALING FACTOR = visF / f;
+
+    // draw little c vector, i.e., a segment that starts at C and ends at C+c
+    //			top left corner of the camera image frame
+}
+
+float PlanarPinholeCamera::GetF()
+{
+    Vector vd = GetVD();
+    float ret = vd * c;
+    return ret;
+}
+
+Vector PlanarPinholeCamera::GetVD()
+{
+    return (a ^ b).normalized();
 }

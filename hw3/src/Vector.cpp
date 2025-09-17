@@ -116,3 +116,25 @@ Vector Vector::rotated(Point origin, Direction direction, float angle_degrees)
                   rotatedVector[1] + origin.xyz[1],
                   rotatedVector[2] + origin.xyz[2]);
 }
+
+unsigned int Vector::GetColor()
+{
+
+    // x is in [0 1] (red)
+    // y is in [0 1] (green)
+    // z is in [0 1] (blue)
+
+    Vector &v = *this;
+    unsigned char rgb[3];
+    for (int ci = 0; ci < 3; ci++)
+    {
+        float tmp = v[ci];
+        tmp = (tmp < 0.0f) ? 0.0f : tmp;
+        tmp = (tmp > 1.0f) ? 1.0f : tmp;
+        rgb[ci] = (unsigned char)(tmp * 255.0f + 0.5f);
+    }
+
+    unsigned int ret = 0xFF000000 + rgb[2] * 256 * 256 +
+                       rgb[1] * 256 + rgb[0];
+    return ret;
+}

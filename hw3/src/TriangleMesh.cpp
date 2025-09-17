@@ -19,6 +19,32 @@ void TriangleMesh::DrawPoints(unsigned int color, int psize, PlanarPinholeCamera
     }
 }
 
+void TriangleMesh::DrawWireFrame(unsigned int color, PlanarPinholeCamera *ppc, FrameBuffer *fb)
+{
+
+    for (int tri = 0; tri < trisN; tri++)
+    {
+        Vector Vs[3], Cs[3];
+        Vs[0] = verts[tris[tri * 3 + 0]];
+        Vs[1] = verts[tris[tri * 3 + 1]];
+        Vs[2] = verts[tris[tri * 3 + 2]];
+        if (colors)
+        {
+            Cs[0] = colors[tris[tri * 3 + 0]];
+            Cs[1] = colors[tris[tri * 3 + 1]];
+            Cs[2] = colors[tris[tri * 3 + 2]];
+        }
+        for (int ei = 0; ei < 3; ei++)
+        {
+            if (colors)
+                fb->Draw3DSegment(Cs[ei], Cs[(ei + 1) % 3], ppc,
+                                  Vs[ei], Vs[(ei + 1) % 3]);
+            else
+                fb->Draw3DSegment(color, ppc, Vs[ei], Vs[(ei + 1) % 3]);
+        }
+    }
+}
+
 void TriangleMesh::Translate(Vector tv)
 {
 

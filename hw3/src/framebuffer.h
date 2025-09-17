@@ -22,4 +22,8 @@ public:
     void SetChecker(int cw, unsigned int col0, unsigned int col1);
     void DrawPoint2D(Vector P, int psize, unsigned int color);
     void DrawPoint3D(Vector P, PlanarPinholeCamera *ppc, int psize, unsigned int color);
+    void Draw3DSegment(unsigned int color, PlanarPinholeCamera *ppc, Vector V0, Vector V1);
+    void Draw2DSegment(unsigned int color, Vector pV0, Vector pV1);
+    void Draw3DSegment(Vector C0, Vector C1, PlanarPinholeCamera *ppc, Vector V0, Vector V1);
+    void Draw2DSegment(Vector C0, Vector C1, Vector pV0, Vector pV1);
 };

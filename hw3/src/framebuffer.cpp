@@ -23,26 +23,53 @@ void FrameBuffer::draw()
 
 int FrameBuffer::handle(int event)
 {
-    switch (event)
+    if (event == FL_KEYDOWN)
     {
-    case FL_KEYBOARD:
-    {
-        KeyboardHandle();
-        return 0;
-    }
-    case FL_MOVE:
-    {
-        int u = Fl::event_x();
-        int v = Fl::event_y();
-        if (u < 0 || u > w - 1 || v < 0 || v > h - 1)
+        int key = Fl::event_key();
+        std::cerr << "Key pressed: " << key << std::endl;
+
+        if (!scene)
             return 0;
-        cerr << u << " " << v << "         \r";
-        return 0;
+
+        switch (key)
+        {
+        case 'w':
+        case 'W':
+            scene->MoveForward();
+            break;
+        case 's':
+        case 'S':
+            scene->MoveBackward();
+            break;
+        case 'a':
+        case 'A':
+            scene->MoveLeft();
+            break;
+        case 'd':
+        case 'D':
+            scene->MoveRight();
+            break;
+        case FL_Left:
+            scene->Pan(-1);
+            break;
+        case FL_Right:
+            scene->Pan(1);
+            break;
+        case FL_Up:
+            scene->Tilt(-1);
+            break;
+        case FL_Down:
+            scene->Tilt(1);
+            break;
+        default:
+            return 0; // let FLTK propagate
+        }
+
+        redraw();
+        return 1;
     }
-    default:
-        return 0;
-    }
-    return 0;
+
+    return Fl_Gl_Window::handle(event);
 }
 
 void FrameBuffer::KeyboardHandle()
@@ -182,10 +209,59 @@ void FrameBuffer::DrawPoint2D(Vector P, int psize, unsigned int color)
 
 void FrameBuffer::DrawPoint3D(Vector P, PlanarPinholeCamera *ppc, int psize, unsigned int color)
 {
-
     Vector Pp;
     if (!ppc->Project(P, Pp))
         return;
 
     DrawPoint2D(Pp, psize, color);
+}
+
+void FrameBuffer::Draw3DSegment(unsigned int color, PlanarPinholeCamera *ppc, Vector V0, Vector V1)
+{
+    Vector pV0, pV1;
+    if (!ppc->Project(V0, pV0))
+        return;
+    if (!ppc->Project(V1, pV1))
+        return;
+    Draw2DSegment(color, pV0, pV1);
+}
+
+void FrameBuffer::Draw3DSegment(Vector C0, Vector C1, PlanarPinholeCamera *ppc,
+                                Vector V0, Vector V1)
+{
+
+    Vector pV0, pV1;
+    if (!ppc->Project(V0, pV0))
+        return;
+    if (!ppc->Project(V1, pV1))
+        return;
+    Draw2DSegment(C0, C1, pV0, pV1);
+}
+
+void FrameBuffer::Draw2DSegment(unsigned int color, Vector pV0, Vector pV1)
+{
+
+    pV0[2] = 0.0f;
+    pV1[2] = 0.0f;
+    int pixn = (int)((pV1 - pV0).length + 2);
+    for (int si = 0; si < pixn; si++)
+    {
+        Vector currP = pV0 + (pV1 - pV0) * (float)si / (float)(pixn - 1);
+        SetSafe((int)currP[0], (int)currP[1], color);
+    }
+}
+
+void FrameBuffer::Draw2DSegment(Vector C0, Vector C1, Vector pV0, Vector pV1)
+{
+
+    pV0[2] = 0.0f;
+    pV1[2] = 0.0f;
+    int pixn = (int)((pV1 - pV0).length + 2);
+    for (int si = 0; si < pixn; si++)
+    {
+        Vector currP = pV0 + (pV1 - pV0) * (float)si / (float)(pixn - 1);
+        Vector currC = C0 + (C1 - C0) * (float)si / (float)(pixn - 1);
+        unsigned int color = currC.GetColor();
+        SetSafe((int)currP[0], (int)currP[1], color);
+    }
 }

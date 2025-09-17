@@ -107,11 +107,7 @@ public:
      */
     void LoadTextFile(const char *filename = "ppc.txt");
 
-    /**
-     * @brief Visualizes this camera in wireframe using another camera's view
-     * @param viewing_camera Camera used to view this camera
-     * @param fb Framebuffer to draw the wireframe on
-     * @param color Color of the wireframe lines
-     */
-    void Visualize(PlanarPinholeCamera *viewing_camera, FrameBuffer *fb, unsigned int color);
+    void Visualize(PlanarPinholeCamera *visPPC, FrameBuffer *fb, float visF);
+    float GetF();
+    Vector GetVD();
 };

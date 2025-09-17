@@ -50,4 +50,5 @@ public:
     Vector operator+(Vector v);
     Vector operator-(Vector v);
     Vector rotated(Point origin, Direction direction, float angle_degrees);
+    unsigned int GetColor();
 };

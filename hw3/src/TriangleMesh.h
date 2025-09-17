@@ -92,4 +92,6 @@ public:
      * @param tv Translation vector to apply to all vertices
      */
     void Translate(Vector tv);
+
+    void DrawWireFrame(unsigned int color, PlanarPinholeCamera *ppc, FrameBuffer *fb);
 };
