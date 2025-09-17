@@ -1,4 +1,5 @@
 #include <cmath>
+#include <fstream>
 #include "PlanarPinholeCamera.h"
 #include "Matrix.h"
 
@@ -107,4 +108,41 @@ PlanarPinholeCamera PlanarPinholeCamera::Interpolate(PlanarPinholeCamera other_c
     retPlanarPinholeCamera.c = c;
 
     return retPlanarPinholeCamera;
+}
+
+void PlanarPinholeCamera::SaveTextFile(const char *filename)
+{
+    std::ofstream file(filename);
+
+    if (!file.is_open())
+    {
+        return;
+    }
+
+    file << w << " " << h << std::endl;
+    file << C << std::endl;
+    file << a << std::endl;
+    file << b << std::endl;
+    file << c << std::endl;
+
+    file.close();
+}
+
+void PlanarPinholeCamera::LoadTextFile(const char *filename)
+{
+    std::ifstream file(filename);
+
+    if (!file.is_open())
+    {
+        return;
+    }
+
+    file >> w >> h;
+    file >> C;
+    file >> a;
+    file >> b;
+    file >> c;
+
+    file.close();
+    return;
 }

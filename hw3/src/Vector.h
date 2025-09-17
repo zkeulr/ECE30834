@@ -12,8 +12,21 @@ public:
     Vector() {};
     Vector(float x, float y, float z);
     float &operator[](int i);
+    /**
+     * @brief Output stream operator for Vector
+     * @param ostr Output stream
+     * @param v Vector to output
+     * @return Reference to the output stream
+     */
     friend std::ostream &operator<<(std::ostream &ostr, Vector v);
-    friend std::istream &operator>>(std::ostream &ostr, Vector v);
+
+    /**
+     * @brief Input stream operator for Vector
+     * @param istr Input stream
+     * @param v Vector to read into
+     * @return Reference to the input stream
+     */
+    friend std::istream &operator>>(std::istream &istr, Vector &v);
     Vector normalized();
     float length;
     float operator*(Vector v);

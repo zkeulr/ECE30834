@@ -98,14 +98,14 @@ public:
      * @brief Saves camera parameters to a text file
      * @param filename Path to the output text file
      */
-    void SaveTextFile(const char *filename);
+    void SaveTextFile(const char *filename = "ppc.txt");
 
     /**
      * @brief Loads camera parameters from a text file
      * @param filename Path to the input text file
      * @return true if successful, false otherwise
      */
-    bool LoadTextFile(const char *filename);
+    void LoadTextFile(const char *filename = "ppc.txt");
 
     /**
      * @brief Visualizes this camera in wireframe using another camera's view

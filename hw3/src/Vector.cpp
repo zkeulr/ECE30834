@@ -43,6 +43,11 @@ std::ostream &operator<<(std::ostream &ostr, Vector v)
     return ostr << v[0] << " " << v[1] << " " << v[2];
 }
 
+std::istream &operator>>(std::istream &istr, Vector &v)
+{
+    return istr >> v[0] >> v[1] >> v[2];
+}
+
 float &Vector::operator[](int i)
 {
     return xyz[i];
