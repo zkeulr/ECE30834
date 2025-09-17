@@ -39,9 +39,10 @@ Scene::Scene()
 void Scene::DBG()
 {
 
-    // load triangle mesh
+    // load triangle meshes
     TriangleMesh TriangleMesh;
-    TriangleMesh.LoadBin("geometry/teapot57K.bin");
+    // TriangleMesh.LoadBin("geometry/teapot57K.bin");
+    TriangleMesh.LoadBin("geometry/terrain.bin");
     TriangleMesh.Position(Vector(0.0f, 0.0f, -150.0f));
 
     // clear framebuffer
