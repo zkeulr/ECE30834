@@ -28,6 +28,19 @@ public:
     PlanarPinholeCamera() {};
 
     /**
+     * @brief Copy constructor
+     * @param other The camera to copy from
+     */
+    PlanarPinholeCamera(const PlanarPinholeCamera &other);
+
+    /**
+     * @brief Assignment operator
+     * @param other The camera to copy from
+     * @return Reference to this camera
+     */
+    PlanarPinholeCamera &operator=(const PlanarPinholeCamera &other);
+
+    /**
      * @brief Constructor with horizontal field of view and image dimensions
      * @param hfov Horizontal field of view in degrees
      * @param _w Image width in pixels
@@ -79,7 +92,7 @@ public:
      * @param t Interpolation parameter (0.0 = this camera, 1.0 = other camera)
      * @return Interpolated camera at parameter t
      */
-    PlanarPinholeCamera Interpolate(const PlanarPinholeCamera &other_camera, float t);
+    PlanarPinholeCamera Interpolate(PlanarPinholeCamera other_camera, float t);
 
     /**
      * @brief Saves camera parameters to a text file

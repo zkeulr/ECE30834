@@ -14,6 +14,30 @@ PlanarPinholeCamera::PlanarPinholeCamera(float hfov, int _w, int _h)
                -(float)w / (2.0f * tan(hfovr / 2.0f)));
 }
 
+PlanarPinholeCamera::PlanarPinholeCamera(const PlanarPinholeCamera &other)
+{
+    w = other.w;
+    h = other.h;
+    C = other.C;
+    a = other.a;
+    b = other.b;
+    c = other.c;
+}
+
+PlanarPinholeCamera &PlanarPinholeCamera::operator=(const PlanarPinholeCamera &other)
+{
+    if (this != &other)
+    {
+        w = other.w;
+        h = other.h;
+        C = other.C;
+        a = other.a;
+        b = other.b;
+        c = other.c;
+    }
+    return *this;
+}
+
 int PlanarPinholeCamera::Project(Vector P, Vector &PP)
 {
     int ret = 1;
@@ -68,6 +92,19 @@ void PlanarPinholeCamera::Zoom(float zoom_scalar)
     c[2] = c[2] * zoom_scalar;
 }
 
-PlanarPinholeCamera Interpolate(const PlanarPinholeCamera &other_camera, float t)
+PlanarPinholeCamera PlanarPinholeCamera::Interpolate(PlanarPinholeCamera other_camera, float t)
 {
+
+    Vector C_i = C + (other_camera.C - C) * t;
+    Vector a_i = a + (other_camera.a - a) * t;
+    Vector b_i = b + (other_camera.b - b) * t;
+    Vector c_i = c + (other_camera.c - c) * t;
+
+    PlanarPinholeCamera retPlanarPinholeCamera(*this);
+    retPlanarPinholeCamera.C = C_i;
+    retPlanarPinholeCamera.a = a;
+    retPlanarPinholeCamera.b = b;
+    retPlanarPinholeCamera.c = c;
+
+    return retPlanarPinholeCamera;
 }
