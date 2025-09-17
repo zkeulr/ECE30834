@@ -4,7 +4,6 @@
 
 PlanarPinholeCamera::PlanarPinholeCamera(float hfov, int _w, int _h)
 {
-
     w = _w;
     h = _h;
     C = Vector(0.0f, 0.0f, 0.0f);
@@ -17,7 +16,6 @@ PlanarPinholeCamera::PlanarPinholeCamera(float hfov, int _w, int _h)
 
 int PlanarPinholeCamera::Project(Vector P, Vector &PP)
 {
-
     int ret = 1;
 
     Matrix M;
@@ -40,4 +38,36 @@ int PlanarPinholeCamera::Project(Vector P, Vector &PP)
 void PlanarPinholeCamera::Translate(Vector tv)
 {
     C = C + tv;
+}
+
+void PlanarPinholeCamera::Pan(float theta)
+{
+    a = a.rotated(Point(C), Direction(b), theta);
+    b = b.rotated(Point(C), Direction(b), theta);
+    c = c.rotated(Point(C), Direction(b), theta);
+}
+
+void PlanarPinholeCamera::Tilt(float theta)
+{
+    a = a.rotated(Point(C), Direction(a), theta);
+    b = b.rotated(Point(C), Direction(a), theta);
+    c = c.rotated(Point(C), Direction(a), theta);
+}
+
+void PlanarPinholeCamera::Roll(float theta)
+{
+    Vector n = b ^ a;
+
+    a = a.rotated(Point(C), Direction(n), theta);
+    b = b.rotated(Point(C), Direction(n), theta);
+    c = c.rotated(Point(C), Direction(n), theta);
+}
+
+void PlanarPinholeCamera::Zoom(float zoom_scalar)
+{
+    c[2] = c[2] * zoom_scalar;
+}
+
+PlanarPinholeCamera Interpolate(const PlanarPinholeCamera &other_camera, float t)
+{
 }

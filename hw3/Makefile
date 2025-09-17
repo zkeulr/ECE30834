@@ -13,12 +13,9 @@ $(TARGET): $(OBJECTS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-record: $(TARGET)
-	rm -f name.mp4
-	./$(TARGET) &
-	wf-recorder -g "$$(swaymsg -t get_tree \
-	  | jq -r '.. | select(.name? == "Name")? \
-	  | .rect | "\(.x),\(.y) \(.width)x\(.height)"')" -f name.mp4
+dbg:
+	rm -f $(OBJECTS) $(TARGET)
+	$(MAKE) $(TARGET) CXXFLAGS="$(CXXFLAGS) -g -O0"
 
 git: 
 	git add .

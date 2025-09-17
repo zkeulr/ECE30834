@@ -1,10 +1,29 @@
-#pragma once
-#include "framebuffer.h"
+#ifndef SCENE_H
+#define SCENE_H
+
+// Forward declarations
+class FrameBuffer;
+class GUI;
+class Vector;
+class Matrix;
+class PlanarPinholeCamera;
+class TriangleMesh;
 
 class Scene
 {
 public:
-    FrameBuffer *fb;
     Scene();
-    void drawLine(int x1, int y1, int x2, int y2, int color = 0xFFFFFFFF);
+
+    void DBG();
+    void NewButton();
+
+private:
+    // Member variables
+    FrameBuffer *fb;
+    GUI *gui;
 };
+
+// Global scene pointer
+extern Scene *scene;
+
+#endif // SCENE_H

@@ -17,9 +17,7 @@ Matrix::Matrix(Vector row0, Vector row1, Vector row2)
 
 Matrix Matrix::identity()
 {
-    rows[0] = Vector(1, 0, 0);
-    rows[1] = Vector(0, 1, 0);
-    rows[2] = Vector(0, 0, 1);
+    return Matrix(Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 1));
 }
 
 Vector &Matrix::operator[](int i)

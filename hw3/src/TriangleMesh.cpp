@@ -39,12 +39,12 @@ Vector TriangleMesh::GetCenter()
     return ret / (float)vertsN;
 }
 
-void TriangleMesh::RotateAboutArbitraryAxis(Vector aO, Vector ad, float theta)
+void TriangleMesh::RotateAboutArbitraryAxis(Point origin, Direction direction, float theta)
 {
 
     for (int vi = 0; vi < vertsN; vi++)
     {
-        verts[vi] = verts[vi].rotated(Point(aO), Direction(ad), theta);
+        verts[vi] = verts[vi].rotated(origin, direction, theta);
     }
 }
 
@@ -58,14 +58,33 @@ void TriangleMesh::Position(Vector newCenter)
 // loading triangle mesh from a binary file, i.e., a .bin file from geometry folder
 void TriangleMesh::LoadBin(char *fname)
 {
-
-    Vector *normals = 0;
-
     ifstream ifs(fname, ios::binary);
     if (ifs.fail())
     {
         cerr << "INFO: cannot open file: " << fname << endl;
         return;
+    }
+
+    // Clean up existing data
+    if (verts)
+    {
+        delete[] verts;
+        verts = nullptr;
+    }
+    if (colors)
+    {
+        delete[] colors;
+        colors = nullptr;
+    }
+    if (normals)
+    {
+        delete[] normals;
+        normals = nullptr;
+    }
+    if (tris)
+    {
+        delete[] tris;
+        tris = nullptr;
     }
 
     ifs.read((char *)&vertsN, sizeof(int));
@@ -76,39 +95,38 @@ void TriangleMesh::LoadBin(char *fname)
         cerr << "INTERNAL ERROR: there should always be vertex xyz data" << endl;
         return;
     }
-    if (verts)
-        delete verts;
+
     verts = new Vector[vertsN];
 
     ifs.read(&yn, 1); // cols 3 floats
-    if (colors)
-        delete colors;
-    colors = 0;
     if (yn == 'y')
     {
         colors = new Vector[vertsN];
     }
 
     ifs.read(&yn, 1); // normals 3 floats
-    if (normals)
-        delete[] normals;
-    normals = 0;
     if (yn == 'y')
     {
         normals = new Vector[vertsN];
     }
 
     ifs.read(&yn, 1); // texture coordinates 2 floats
-    float *tcs = 0;   // don't have texture coordinates for now
-    if (tcs)
-        delete[] tcs;
-    tcs = 0;
+    float *tcs = nullptr;
     if (yn == 'y')
     {
         tcs = new float[vertsN * 2];
     }
 
-    ifs.read((char *)verts, vertsN * 3 * sizeof(float)); // load verts
+    float *tempVerts = new float[vertsN * 3];
+
+    ifs.read((char *)tempVerts, vertsN * 3 * sizeof(float));
+
+    // properly construct Vector objects
+    for (int i = 0; i < vertsN; i++)
+    {
+        verts[i] = Vector(tempVerts[i * 3], tempVerts[i * 3 + 1], tempVerts[i * 3 + 2]);
+    }
+    delete[] tempVerts;
 
     if (colors)
     {
@@ -119,17 +137,26 @@ void TriangleMesh::LoadBin(char *fname)
         ifs.read((char *)normals, vertsN * 3 * sizeof(float)); // load normals
 
     if (tcs)
+    {
         ifs.read((char *)tcs, vertsN * 2 * sizeof(float)); // load texture coordinates
+        delete[] tcs;                                      // Clean up local tcs since it's not stored as member
+    }
 
     ifs.read((char *)&trisN, sizeof(int));
-    if (tris)
-        delete tris;
     tris = new unsigned int[trisN * 3];
-    ifs.read((char *)tris, trisN * 3 * sizeof(unsigned int)); // read tiangles
+    ifs.read((char *)tris, trisN * 3 * sizeof(unsigned int)); // read triangles
 
     ifs.close();
 
     cerr << "INFO: loaded " << vertsN << " verts, " << trisN << " tris from " << endl
          << "      " << fname << endl;
     cerr << "      xyz " << ((colors) ? "rgb " : "") << ((normals) ? "nxnynz " : "") << ((tcs) ? "tcstct " : "") << endl;
+}
+
+TriangleMesh::~TriangleMesh()
+{
+    delete[] verts;
+    delete[] colors;
+    delete[] tris;
+    delete[] normals;
 }

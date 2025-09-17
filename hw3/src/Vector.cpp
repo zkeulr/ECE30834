@@ -74,6 +74,16 @@ Vector Vector::operator*(float scalar)
     return ret;
 }
 
+Vector Vector::operator-() const
+{
+    return Vector(-xyz[0], -xyz[1], -xyz[2]);
+}
+
+Vector operator*(float scalar, const Vector &v)
+{
+    return Vector(v.xyz[0] * scalar, v.xyz[1] * scalar, v.xyz[2] * scalar);
+}
+
 Vector Vector::operator^(Vector v)
 {
     Vector &u = *this;
