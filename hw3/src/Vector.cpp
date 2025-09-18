@@ -10,8 +10,11 @@ Vector::Vector(float x, float y, float z)
     xyz[0] = x;
     xyz[1] = y;
     xyz[2] = z;
+}
 
-    length = sqrtf(x * x + y * y + z * z);
+float Vector::length()
+{
+    return sqrtf(xyz[0] * xyz[0] + xyz[1] * xyz[1] + xyz[2] * xyz[2]);
 }
 
 Vector Vector::operator+(Vector v)
@@ -100,7 +103,7 @@ Vector Vector::operator^(Vector v)
 Vector Vector::normalized()
 {
     Vector &v = *this;
-    return v / v.length;
+    return v / v.length();
 }
 
 Vector Vector::rotated(Point origin, Direction direction, float angle_degrees)

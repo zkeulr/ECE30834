@@ -4,10 +4,14 @@
 
 Ensure the GUI window is in focus before using the keys.
 
-- **W**: Move forward.
-- **S**: Move backward.
-- **A**: Move left.
-- **D**: Move right.
+- **W**: Move forward
+- **S**: Move backward
+- **A**: Move left
+- **D**: Move right
+- **Q**: Roll left
+- **E**: Roll right
+- **Z**: Zoom in
+- **X**: Zoom out
 
 - **Up Arrow**: Tilt up.
 - **Down Arrow**: Tilt down.

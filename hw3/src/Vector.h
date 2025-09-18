@@ -28,7 +28,7 @@ public:
      */
     friend std::istream &operator>>(std::istream &istr, Vector &v);
     Vector normalized();
-    float length;
+    float length();
     float operator*(Vector v);
 
     /**

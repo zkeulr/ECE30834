@@ -19,7 +19,7 @@ void TriangleMesh::DrawPoints(unsigned int color, int psize, PlanarPinholeCamera
     }
 }
 
-void TriangleMesh::DrawWireFrame(unsigned int color, PlanarPinholeCamera *ppc, FrameBuffer *fb)
+void TriangleMesh::DrawWireFrame(unsigned int color, int psize, PlanarPinholeCamera *ppc, FrameBuffer *fb)
 {
 
     for (int tri = 0; tri < trisN; tri++)

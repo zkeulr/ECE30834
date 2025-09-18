@@ -15,7 +15,6 @@ Scene *scene;
 
 Scene::Scene()
 {
-
     int u0 = 20;
     int v0 = 40;
     int h = 800;
@@ -36,20 +35,33 @@ Scene::Scene()
     gui->uiw->position(u0, v0 + fb->h + v0);
 }
 
-void Scene::DBG()
+void Scene::Record()
 {
+    // SaveText
+    // each time the user moves?
+    // we need to save to a single file
+}
+
+void Scene::Play()
+{
+
+    // load and play back camera path
+    /*
+        Create a camera path that shows the scene you built; save the path to a text
+        file; the path should have 3 or more key frames and 300 frames total; allow
+        the user to render the path by pressing a Play button;
+    */
 
     // load triangle meshes
     TriangleMesh TriangleMesh;
-    // TriangleMesh.LoadBin("geometry/teapot57K.bin");
-    TriangleMesh.LoadBin("geometry/terrain.bin");
+    TriangleMesh.LoadBin("geometry/teapot57K.bin");
     TriangleMesh.Position(Vector(0.0f, 0.0f, -150.0f));
 
     // clear framebuffer
     fb->Set(0xFFFFFFFF);
 
     // render mesh with one point per vertex; // no triangles (yet)
-    TriangleMesh.DrawPoints(0xFF000000, 3, ppc, fb);
+    TriangleMesh.DrawWireFrame(0xFF000000, 10, ppc, fb);
 
     // refresh window
     fb->redraw();
@@ -62,9 +74,9 @@ void Scene::redraw()
     fb->Set(0xFFFFFFFF);
 
     TriangleMesh mesh;
-    mesh.LoadBin("geometry/teapot57K.bin");
+    mesh.LoadBin("geometry/teapot1K.bin");
     mesh.Position(Vector(0, 0, -150));
-    mesh.DrawPoints(0xFF000000, 3, ppc, fb);
+    mesh.DrawWireFrame(0xFF000000, 3, ppc, fb);
 
     fb->redraw();
 }
@@ -111,9 +123,23 @@ void Scene::Tilt(float theta)
     redraw();
 }
 
-void Scene::Roll(float theta)
+void Scene::RollLeft(float theta)
 {
     std::cerr << "INFO: Roll " << theta << std::endl;
     ppc->Roll(theta);
+    redraw();
+}
+
+void Scene::RollRight(float theta)
+{
+    std::cerr << "INFO: Roll " << -theta << std::endl;
+    ppc->Roll(-theta);
+    redraw();
+}
+
+void Scene::Zoom(float zoom)
+{
+    std::cerr << "INFO: Zoom " << zoom << std::endl;
+    ppc->Zoom(zoom);
     redraw();
 }

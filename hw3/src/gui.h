@@ -8,13 +8,16 @@
 class GUI
 {
 private:
-  inline void cb_DBG_i(Fl_Button *, void *);
-  static void cb_DBG(Fl_Button *, void *);
+  inline void cb_Play_i(Fl_Button *, void *);
+  static void cb_Play(Fl_Button *, void *);
+  inline void cb_Record_i(Fl_Button *, void *);
+  static void cb_Record(Fl_Button *o, void *v);
 
 public:
   GUI();
   void show();
-  void DBG_cb();
+  void Record_cb();
+  void Play_cb();
   Fl_Double_Window *uiw;
   FrameBuffer *fb;
 };

@@ -14,14 +14,17 @@ public:
     Scene();
     void redraw();
 
-    void DBG();
+    void Record();
+    void Play();
     void Pan(float theta);
     void Tilt(float theta);
-    void Roll(float theta);
+    void RollLeft(float theta);
+    void RollRight(float theta);
     void MoveForward();
     void MoveBackward();
     void MoveLeft();
     void MoveRight();
+    void Zoom(float zoom);
 };
 
 // Global scene pointer

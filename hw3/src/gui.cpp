@@ -1,16 +1,35 @@
 #include "gui.h"
 #include "scene.h"
 #include "framebuffer.h"
-#include <iostream> // TODO: delete
 
-void GUI::cb_DBG_i(Fl_Button *, void *)
+void GUI::cb_Play_i(Fl_Button *, void *)
 {
-  DBG_cb();
+  Play_cb();
 }
 
-void GUI::cb_DBG(Fl_Button *o, void *v)
+void GUI::cb_Play(Fl_Button *o, void *v)
 {
-  ((GUI *)(o->parent()->user_data()))->cb_DBG_i(o, v);
+  ((GUI *)(o->parent()->user_data()))->cb_Play_i(o, v);
+}
+
+void GUI::Play_cb()
+{
+  scene->Play();
+}
+
+void GUI::cb_Record_i(Fl_Button *, void *)
+{
+  Record_cb();
+}
+
+void GUI::cb_Record(Fl_Button *o, void *v)
+{
+  ((GUI *)(o->parent()->user_data()))->cb_Record_i(o, v);
+}
+
+void GUI::Record_cb()
+{
+  scene->Record();
 }
 
 GUI::GUI()
@@ -24,17 +43,15 @@ GUI::GUI()
   fb->box(FL_DOWN_FRAME);
 
   // Debug button
-  Fl_Button *o = new Fl_Button(280, 20, 100, 40, "DBG");
+  Fl_Button *o = new Fl_Button(280, 20, 100, 40, "Play");
   o->selection_color(FL_DARK_RED);
-  o->callback((Fl_Callback *)cb_DBG);
+  o->callback((Fl_Callback *)cb_Play);
+
+  // Playback button
+  // load path from file
+  // play it out
 
   uiw->end();
-}
-
-int main(int argc, char **argv)
-{
-  scene = new Scene;
-  return Fl::run();
 }
 
 void GUI::show()
@@ -43,7 +60,8 @@ void GUI::show()
   fb->take_focus();
 }
 
-void GUI::DBG_cb()
+int main(int argc, char **argv)
 {
-  scene->DBG();
+  scene = new Scene;
+  return Fl::run();
 }

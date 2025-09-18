@@ -72,11 +72,12 @@ public:
 
     /**
      * @brief Renders the triangle mesh in wireframe mode with vertex color interpolation
+     * @param color Color of the points (32-bit RGBA)
+     * @param psize Thickness of line in pixels
      * @param ppc Pointer to the camera for projection
      * @param fb Pointer to the framebuffer to draw on
-     * @param lineWidth Width of the wireframe lines in pixels
      */
-    void RenderWireFrame(PlanarPinholeCamera *ppc, FrameBuffer *fb, int lineWidth = 1);
+    void DrawWireFrame(unsigned int color, int psize, PlanarPinholeCamera *ppc, FrameBuffer *fb);
 
     /**
      * @brief Draws all vertices of the mesh as points
@@ -92,6 +93,4 @@ public:
      * @param tv Translation vector to apply to all vertices
      */
     void Translate(Vector tv);
-
-    void DrawWireFrame(unsigned int color, PlanarPinholeCamera *ppc, FrameBuffer *fb);
 };

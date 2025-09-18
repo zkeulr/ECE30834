@@ -49,6 +49,22 @@ int FrameBuffer::handle(int event)
         case 'D':
             scene->MoveRight();
             break;
+        case 'q':
+        case 'Q':
+            scene->RollLeft(1);
+            break;
+        case 'e':
+        case 'E':
+            scene->RollRight(1);
+            break;
+        case 'z':
+        case 'Z':
+            scene->Zoom(1.1);
+            break;
+        case 'x':
+        case 'X':
+            scene->Zoom(0.9);
+            break;
         case FL_Left:
             scene->Pan(-1);
             break;
@@ -243,7 +259,7 @@ void FrameBuffer::Draw2DSegment(unsigned int color, Vector pV0, Vector pV1)
 
     pV0[2] = 0.0f;
     pV1[2] = 0.0f;
-    int pixn = (int)((pV1 - pV0).length + 2);
+    int pixn = (int)((pV1 - pV0).length() + 2);
     for (int si = 0; si < pixn; si++)
     {
         Vector currP = pV0 + (pV1 - pV0) * (float)si / (float)(pixn - 1);
@@ -256,7 +272,7 @@ void FrameBuffer::Draw2DSegment(Vector C0, Vector C1, Vector pV0, Vector pV1)
 
     pV0[2] = 0.0f;
     pV1[2] = 0.0f;
-    int pixn = (int)((pV1 - pV0).length + 2);
+    int pixn = (int)((pV1 - pV0).length() + 2);
     for (int si = 0; si < pixn; si++)
     {
         Vector currP = pV0 + (pV1 - pV0) * (float)si / (float)(pixn - 1);
