@@ -47,9 +47,6 @@ GUI::GUI()
   uiw = new Fl_Double_Window(400, 300, "GUI");
   uiw->user_data((void *)(this));
 
-  // fb = new FrameBuffer(10, 10, 256, 256);
-  // fb->box(FL_DOWN_FRAME);
-
   Fl_Button *playBtn = new Fl_Button(280, 20, 100, 40, "Play");
   playBtn->selection_color(FL_DARK_RED);
   playBtn->callback((Fl_Callback *)cb_Play);
