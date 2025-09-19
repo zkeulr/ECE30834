@@ -103,6 +103,28 @@ void PlanarPinholeCamera::Zoom(float zoom_scalar)
     c[2] = c[2] * zoom_scalar;
 }
 
+// nonlinear interpolation
+PlanarPinholeCamera PlanarPinholeCamera::Interpolate(PlanarPinholeCamera other_camera, float t)
+{
+    float s = t * t * (3 - 2 * t); // smoother
+    // float s = sin(t * M_PI_2);
+
+    Vector C_i = C + (other_camera.C - C) * s;
+    Vector a_i = a + (other_camera.a - a) * s;
+    Vector b_i = b + (other_camera.b - b) * s;
+    Vector c_i = c + (other_camera.c - c) * s;
+
+    PlanarPinholeCamera retPlanarPinholeCamera(*this);
+    retPlanarPinholeCamera.C = C_i;
+    retPlanarPinholeCamera.a = a_i;
+    retPlanarPinholeCamera.b = b_i;
+    retPlanarPinholeCamera.c = c_i;
+
+    return retPlanarPinholeCamera;
+}
+
+// linear interpolation
+/*
 PlanarPinholeCamera PlanarPinholeCamera::Interpolate(PlanarPinholeCamera other_camera, float t)
 {
 
@@ -113,12 +135,13 @@ PlanarPinholeCamera PlanarPinholeCamera::Interpolate(PlanarPinholeCamera other_c
 
     PlanarPinholeCamera retPlanarPinholeCamera(*this);
     retPlanarPinholeCamera.C = C_i;
-    retPlanarPinholeCamera.a = a;
-    retPlanarPinholeCamera.b = b;
-    retPlanarPinholeCamera.c = c;
+    retPlanarPinholeCamera.a = a_i;
+    retPlanarPinholeCamera.b = b_i;
+    retPlanarPinholeCamera.c = c_i;
 
     return retPlanarPinholeCamera;
 }
+*/
 
 void PlanarPinholeCamera::SaveTextFile(const char *filename)
 {
@@ -157,33 +180,42 @@ void PlanarPinholeCamera::LoadTextFile(const char *filename)
     return;
 }
 
-// visualize (draw) "this" camera (on which you are calling visualize)
-//    as seen by visPPC
-//	  into fb
-//    IMPORTANT: draw the camera to scale such that the focal length be visF
-
-// elements that need to be shown:
-// C
-// a
-// b
-// c
-// focal length visF
-
 void PlanarPinholeCamera::Visualize(PlanarPinholeCamera *visPPC, FrameBuffer *fb, float visF)
 {
-
-    // draw image frame as a 3D rectangle projected with visPPC onto fb
-    // (4 segments)
-    Vector topLeft = C + c;
-    Vector topRight = topLeft + a * (float)w;
-    Vector bottomRight = topRight + b * (float)h;
-    Vector bottomleft = bottomRight - a * (float)w;
-    // render 4 3D segments between these 4 corners BUT SCALED DOWN
     float f = GetF();
-    //	SCALING FACTOR = visF / f;
+    float scale = visF / f;
 
-    // draw little c vector, i.e., a segment that starts at C and ends at C+c
-    //			top left corner of the camera image frame
+    // C
+    fb->DrawPoint3D(C, visPPC, 5, 0xFF00FF00);
+
+    Vector scaled_a = a * (float)w * scale;
+    Vector scaled_b = b * (float)h * scale;
+    Vector scaled_c = c * scale;
+
+    Vector visual_C = C + (c - scaled_c);
+
+    Vector topLeft = visual_C + scaled_c;
+    Vector topRight = topLeft + scaled_a;
+    Vector bottomRight = topRight + scaled_b;
+    Vector bottomLeft = bottomRight - scaled_a;
+
+    // projection plane
+    fb->Draw3DSegment(0xFFFFFFFF, visPPC, topLeft, topRight);
+    fb->Draw3DSegment(0xFFFFFFFF, visPPC, topRight, bottomRight);
+    fb->Draw3DSegment(0xFFFFFFFF, visPPC, bottomRight, bottomLeft);
+    fb->Draw3DSegment(0xFFFFFFFF, visPPC, bottomLeft, topLeft);
+
+    Vector center_of_plane = visual_C + scaled_c + (scaled_a * 0.5f) + (scaled_b * 0.5f);
+    fb->Draw3DSegment(0xFFFFFF00, visPPC, C, center_of_plane);
+
+    // c
+    fb->Draw3DSegment(0xFF0000FF, visPPC, C, topLeft);
+
+    // a
+    fb->Draw3DSegment(0xFFFF0000, visPPC, topLeft, topLeft + scaled_a * 0.2f);
+
+    // b
+    fb->Draw3DSegment(0xFF00FFFF, visPPC, topLeft, topLeft + scaled_b * 0.2f);
 }
 
 float PlanarPinholeCamera::GetF()

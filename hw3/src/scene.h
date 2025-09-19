@@ -1,5 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
+#include <vector>
 #include "framebuffer.h"
 
 class GUI;
@@ -10,6 +11,8 @@ public:
     FrameBuffer *fb;
     GUI *gui;
     PlanarPinholeCamera *ppc;
+    bool isRecording = false;
+    std::vector<PlanarPinholeCamera> recordedFrames;
 
     Scene();
     void redraw();

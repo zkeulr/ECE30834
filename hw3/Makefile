@@ -26,5 +26,5 @@ zip:
 	zip -r $(TARGET).zip .
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) $(TARGET).zip
+	rm -f $(OBJECTS) $(TARGET) $(TARGET).zip camera_path.txt
 	clear

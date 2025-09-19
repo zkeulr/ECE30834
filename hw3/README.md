@@ -1,8 +1,13 @@
 # README
 
-## GUI
+The triangle mesh will load as soon as any of the below buttons
+are pressed. Ensure the GUI window is in focus before using the keys.
 
-Ensure the GUI window is in focus before using the keys.
+## TODO
+
+- Draw axis-aligned bounding box for the loaded triangle meshes, rather than setting the framebuffer edges.
+
+## GUI
 
 - **W**: Move forward
 - **S**: Move backward
@@ -18,6 +23,11 @@ Ensure the GUI window is in focus before using the keys.
 - **Left Arrow**: Pan left.
 - **Right Arrow**: Pan right.
 
+## Extra credit
+
+- Nonlinear camera interpolation
+
 ## Resources Used
 
-[Claude Sonnet](claude.ai), to rewrite LoadBin to work on my machine and generate Doxygen comments for `TriangleMesh.h` and `PlanarPinholeCamera.h`.
+[Claude Sonnet](claude.ai), to rewrite `LoadBin()` to work on my machine, generate Doxygen comments, generate `Visualize()`, and
+explain nonlinear interpolation.

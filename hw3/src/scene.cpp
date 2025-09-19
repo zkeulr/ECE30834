@@ -30,6 +30,13 @@ Scene::Scene()
     ppc = new PlanarPinholeCamera(hfov, w, h);
     ppc->Translate(Vector(0, 0, 250)); // start a bit back
 
+    /*
+    PlanarPinholeCamera visCam(60, w, h);
+    visCam.Translate(Vector(0, 0, 500));
+    ppc->Visualize(&visCam, fb, 200);
+    fb->redraw();
+    */
+
     gui = new GUI();
     gui->show();
     gui->uiw->position(u0, v0 + fb->h + v0);
@@ -37,36 +44,69 @@ Scene::Scene()
 
 void Scene::Record()
 {
-    // SaveText
-    // each time the user moves?
-    // we need to save to a single file
+    if (!isRecording)
+    {
+        std::cerr << "Recording started." << std::endl;
+        isRecording = true;
+        recordedFrames.clear();
+    }
+    else
+    {
+        std::cerr << "Recording stopped. Saving..." << std::endl;
+        isRecording = false;
+
+        std::ofstream file("camera_path.txt");
+
+        for (auto &cam : recordedFrames)
+        {
+
+            file << cam.w << " " << cam.h << "\n";
+            file << cam.C << "\n";
+            file << cam.a << "\n";
+            file << cam.b << "\n";
+            file << cam.c << "\n";
+        }
+        file.close();
+
+        std::cerr << "Recording saved!" << std::endl;
+    }
 }
 
 void Scene::Play()
 {
+    std::ifstream file("camera_path.txt");
+    if (!file.is_open())
+        return;
 
-    // load and play back camera path
-    /*
-        Create a camera path that shows the scene you built; save the path to a text
-        file; the path should have 3 or more key frames and 300 frames total; allow
-        the user to render the path by pressing a Play button;
-    */
+    std::vector<PlanarPinholeCamera> keyframes;
+    while (!file.eof())
+    {
+        PlanarPinholeCamera cam(60, fb->w, fb->h); // dummy init
+        file >> cam.w >> cam.h;
+        file >> cam.C;
+        file >> cam.a;
+        file >> cam.b;
+        file >> cam.c;
+        if (file)
+            keyframes.push_back(cam);
+    }
+    file.close();
 
-    // load triangle meshes
-    TriangleMesh TriangleMesh;
-    TriangleMesh.LoadBin("geometry/teapot57K.bin");
-    TriangleMesh.Position(Vector(0.0f, 0.0f, -150.0f));
+    if (keyframes.size() < 2)
+        return;
 
-    // clear framebuffer
-    fb->Set(0xFFFFFFFF);
-
-    // render mesh with one point per vertex; // no triangles (yet)
-    TriangleMesh.DrawWireFrame(0xFF000000, 10, ppc, fb);
-
-    // refresh window
-    fb->redraw();
-
-    return;
+    int totalFrames = 300;
+    for (int i = 0; i < (int)keyframes.size() - 1; i++)
+    {
+        for (int j = 0; j < totalFrames / (keyframes.size() - 1); j++)
+        {
+            float t = (float)j / (totalFrames / (keyframes.size() - 1));
+            *ppc = keyframes[i].Interpolate(keyframes[i + 1], t);
+            redraw();
+            Fl::check();    // apparently this helps keep GUI responsive
+            Fl::wait(0.01); // small delay for playback speed, feels nice
+        }
+    }
 }
 
 void Scene::redraw()
@@ -77,6 +117,11 @@ void Scene::redraw()
     mesh.LoadBin("geometry/teapot1K.bin");
     mesh.Position(Vector(0, 0, -150));
     mesh.DrawWireFrame(0xFF000000, 3, ppc, fb);
+
+    if (isRecording)
+    {
+        recordedFrames.push_back(*ppc);
+    }
 
     fb->redraw();
 }
