@@ -17,14 +17,17 @@ dbg:
 	rm -f $(OBJECTS) $(TARGET)
 	$(MAKE) $(TARGET) CXXFLAGS="$(CXXFLAGS) -g -O0"
 
-git: 
+git: clean
 	git add .
 	git commit --allow-empty-message -m ""
 	git push
 
-zip: 
+recording:
+	ffmpeg -framerate 30 -i frames/frame_%04d.tif -c:v libx264 -pix_fmt yuv420p camera_path.mp4
+
+zip: clean
 	zip -r $(TARGET).zip .
 
 clean:
-	rm -f $(OBJECTS) $(TARGET) $(TARGET).zip
+	rm -f $(OBJECTS) $(TARGET) $(TARGET).zip frames/*
 	clear

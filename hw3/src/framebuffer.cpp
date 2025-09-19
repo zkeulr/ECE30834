@@ -137,32 +137,39 @@ void FrameBuffer::LoadTiff(char *fname)
     TIFFClose(in);
 }
 
-// save as tiff image
 void FrameBuffer::SaveTiff(char *fname)
 {
-
-    TIFF *out = TIFFOpen(fname, "w");
-
-    if (out == NULL)
-    {
-        cerr << fname << " could not be opened" << endl;
+    TIFF *tif = TIFFOpen(fname, "w");
+    if (!tif)
         return;
-    }
 
-    TIFFSetField(out, TIFFTAG_IMAGEWIDTH, w);
-    TIFFSetField(out, TIFFTAG_IMAGELENGTH, h);
-    TIFFSetField(out, TIFFTAG_SAMPLESPERPIXEL, 4);
-    TIFFSetField(out, TIFFTAG_BITSPERSAMPLE, 8);
-    TIFFSetField(out, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
-    TIFFSetField(out, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-    TIFFSetField(out, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, w);
+    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 3);
+    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
+    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+    TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_RGB);
+    TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, TIFFDefaultStripSize(tif, w * 3));
 
-    for (uint32 row = 0; row < (unsigned int)h; row++)
+    std::vector<uint8_t> buf(w * 3);
+    for (int y = 0; y < h; y++)
     {
-        TIFFWriteScanline(out, &pix[(h - row - 1) * w], row);
+        int srcY = h - 1 - y; // flip vertically
+        for (int x = 0; x < w; x++)
+        {
+            unsigned int pixel = pix[srcY * w + x];
+            buf[x * 3 + 0] = (pixel >> 16) & 0xFF; // R
+            buf[x * 3 + 1] = (pixel >> 8) & 0xFF;  // G
+            buf[x * 3 + 2] = pixel & 0xFF;         // B
+        }
+        if (TIFFWriteScanline(tif, buf.data(), y, 0) < 0)
+        {
+            break;
+        }
     }
 
-    TIFFClose(out);
+    TIFFClose(tif);
 }
 
 void FrameBuffer::Set(unsigned int color)

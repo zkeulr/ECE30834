@@ -79,33 +79,46 @@ void Scene::Play()
         return;
 
     std::vector<PlanarPinholeCamera> keyframes;
-    while (!file.eof())
+    while (true)
     {
-        PlanarPinholeCamera cam(60, fb->w, fb->h); // dummy init
-        file >> cam.w >> cam.h;
-        file >> cam.C;
-        file >> cam.a;
-        file >> cam.b;
-        file >> cam.c;
-        if (file)
-            keyframes.push_back(cam);
+        PlanarPinholeCamera cam(60, fb->w, fb->h);
+        if (!(file >> cam.w >> cam.h))
+            break;
+        if (!(file >> cam.C))
+            break;
+        if (!(file >> cam.a))
+            break;
+        if (!(file >> cam.b))
+            break;
+        if (!(file >> cam.c))
+            break;
+        keyframes.push_back(cam);
     }
     file.close();
 
     if (keyframes.size() < 2)
         return;
 
-    int totalFrames = 300;
-    for (int i = 0; i < (int)keyframes.size() - 1; i++)
+    int totalFrames = 300; // total playback length, not per segment
+    for (int frame = 0; frame < totalFrames; frame++)
     {
-        for (int j = 0; j < totalFrames / (keyframes.size() - 1); j++)
-        {
-            float t = (float)j / (totalFrames / (keyframes.size() - 1));
-            *ppc = keyframes[i].Interpolate(keyframes[i + 1], t);
-            redraw();
-            Fl::check();    // apparently this helps keep GUI responsive
-            Fl::wait(0.01); // small delay for playback speed, feels nice
-        }
+        float t = (float)frame / (totalFrames - 1);
+        float segf = t * (keyframes.size() - 1);
+        int i = (int)segf;
+        float localT = segf - i;
+
+        if (i >= (int)keyframes.size() - 1)
+            i = keyframes.size() - 2;
+
+        *ppc = keyframes[i].Interpolate(keyframes[i + 1], localT);
+        redraw();
+        Fl::check();
+        Fl::wait(0.01);
+
+        // save frames to convert with ffmpeg
+        char fname[256];
+        sprintf(fname, "frames/frame_%04d.tif", frame);
+        fb->SaveTiff(fname);
     }
 }
 
