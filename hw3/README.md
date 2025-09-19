@@ -3,11 +3,6 @@
 The triangle mesh will load as soon as any of the below buttons
 are pressed. Ensure the GUI window is in focus before using the keys.
 
-## TODO
-
-- Draw axis-aligned bounding box for the loaded triangle meshes, rather than setting the framebuffer edges.
-- Create screenshot of camera visualization
-
 ## GUI
 
 - **W**: Move forward
@@ -31,5 +26,6 @@ are pressed. Ensure the GUI window is in focus before using the keys.
 ## Resources Used
 
 [Claude Sonnet](claude.ai), to rewrite `LoadBin()` to work on my machine, generate Doxygen comments, generate `Visualize()`,
-explain nonlinear interpolation, and rewrite `SaveTiff()` with
-proper headers for FFmpeg compatibility.
+explain nonlinear interpolation, rewrite `SaveTiff()` with
+proper headers for FFmpeg compatibility, and for debugging the
+axis-aligned bounding box methods.

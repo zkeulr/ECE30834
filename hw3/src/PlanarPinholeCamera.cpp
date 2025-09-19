@@ -185,37 +185,33 @@ void PlanarPinholeCamera::Visualize(PlanarPinholeCamera *visPPC, FrameBuffer *fb
     float f = GetF();
     float scale = visF / f;
 
-    // C
+    // camera center
     fb->DrawPoint3D(C, visPPC, 5, 0xFF00FF00);
 
     Vector scaled_a = a * (float)w * scale;
     Vector scaled_b = b * (float)h * scale;
     Vector scaled_c = c * scale;
 
-    Vector visual_C = C + (c - scaled_c);
-
-    Vector topLeft = visual_C + scaled_c;
+    // image plane corners
+    Vector topLeft = C + scaled_c;
     Vector topRight = topLeft + scaled_a;
     Vector bottomRight = topRight + scaled_b;
     Vector bottomLeft = bottomRight - scaled_a;
 
-    // projection plane
+    // draw image plane
     fb->Draw3DSegment(0xFFFFFFFF, visPPC, topLeft, topRight);
     fb->Draw3DSegment(0xFFFFFFFF, visPPC, topRight, bottomRight);
     fb->Draw3DSegment(0xFFFFFFFF, visPPC, bottomRight, bottomLeft);
     fb->Draw3DSegment(0xFFFFFFFF, visPPC, bottomLeft, topLeft);
 
-    Vector center_of_plane = visual_C + scaled_c + (scaled_a * 0.5f) + (scaled_b * 0.5f);
+    // center of plane
+    Vector center_of_plane = (topLeft + topRight + bottomRight + bottomLeft) * 0.25f;
     fb->Draw3DSegment(0xFFFFFF00, visPPC, C, center_of_plane);
 
-    // c
-    fb->Draw3DSegment(0xFF0000FF, visPPC, C, topLeft);
-
-    // a
-    fb->Draw3DSegment(0xFFFF0000, visPPC, topLeft, topLeft + scaled_a * 0.2f);
-
-    // b
-    fb->Draw3DSegment(0xFF00FFFF, visPPC, topLeft, topLeft + scaled_b * 0.2f);
+    // axis indicators
+    fb->Draw3DSegment(0xFF0000FF, visPPC, C, C + (c.normalized() * visF));        // view dir
+    fb->Draw3DSegment(0xFFFF0000, visPPC, C, C + (a.normalized() * visF * 0.3f)); // right
+    fb->Draw3DSegment(0xFF00FFFF, visPPC, C, C + (b.normalized() * visF * 0.3f)); // up
 }
 
 float PlanarPinholeCamera::GetF()

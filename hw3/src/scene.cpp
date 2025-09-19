@@ -30,12 +30,13 @@ Scene::Scene()
     ppc = new PlanarPinholeCamera(hfov, w, h);
     ppc->Translate(Vector(0, 0, 250)); // start a bit back
 
-    /*
-    PlanarPinholeCamera visCam(60, w, h);
-    visCam.Translate(Vector(0, 0, 500));
-    ppc->Visualize(&visCam, fb, 200);
-    fb->redraw();
-    */
+    PlanarPinholeCamera visCam(hfov, w, h);
+    visCam.Translate(Vector(150, 100, 500)); // further back & offset
+    visCam.Pan(30);                          // rotate to face the camera
+    visCam.Tilt(-15);                        // slight downward tilt
+    ppc->Visualize(&visCam, fb, 400);        // larger visF so the plane is visible
+
+    fb->SaveTiff("camera_visualization.tiff");
 
     gui = new GUI();
     gui->show();

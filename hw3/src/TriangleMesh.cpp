@@ -186,3 +186,60 @@ TriangleMesh::~TriangleMesh()
     delete[] tris;
     delete[] normals;
 }
+
+void TriangleMesh::ComputeAABB(Vector &minP, Vector &maxP)
+{
+    if (vertsN <= 0 || verts == nullptr)
+    {
+        minP = Vector(0, 0, 0);
+        maxP = Vector(0, 0, 0);
+        return;
+    }
+
+    minP = verts[0];
+    maxP = verts[0];
+
+    for (int i = 1; i < vertsN; i++)
+    {
+        for (int k = 0; k < 3; k++)
+        {
+            if (verts[i][k] < minP[k])
+                minP[k] = verts[i][k];
+            if (verts[i][k] > maxP[k])
+                maxP[k] = verts[i][k];
+        }
+    }
+}
+
+void TriangleMesh::DrawAABB(FrameBuffer *fb, PlanarPinholeCamera *ppc,
+                            Vector minP, Vector maxP,
+                            unsigned int color)
+{
+    // 8 corners of the box
+    Vector p000(minP[0], minP[1], minP[2]);
+    Vector p001(minP[0], minP[1], maxP[2]);
+    Vector p010(minP[0], maxP[1], minP[2]);
+    Vector p011(minP[0], maxP[1], maxP[2]);
+    Vector p100(maxP[0], minP[1], minP[2]);
+    Vector p101(maxP[0], minP[1], maxP[2]);
+    Vector p110(maxP[0], maxP[1], minP[2]);
+    Vector p111(maxP[0], maxP[1], maxP[2]);
+
+    // bottom face
+    fb->Draw3DSegment(color, ppc, p000, p100);
+    fb->Draw3DSegment(color, ppc, p100, p110);
+    fb->Draw3DSegment(color, ppc, p110, p010);
+    fb->Draw3DSegment(color, ppc, p010, p000);
+
+    // top face
+    fb->Draw3DSegment(color, ppc, p001, p101);
+    fb->Draw3DSegment(color, ppc, p101, p111);
+    fb->Draw3DSegment(color, ppc, p111, p011);
+    fb->Draw3DSegment(color, ppc, p011, p001);
+
+    // vertical edges
+    fb->Draw3DSegment(color, ppc, p000, p001);
+    fb->Draw3DSegment(color, ppc, p100, p101);
+    fb->Draw3DSegment(color, ppc, p110, p111);
+    fb->Draw3DSegment(color, ppc, p010, p011);
+}

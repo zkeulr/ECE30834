@@ -93,4 +93,9 @@ public:
      * @param tv Translation vector to apply to all vertices
      */
     void Translate(Vector tv);
+
+    void ComputeAABB(Vector &minP, Vector &maxP);
+    void DrawAABB(FrameBuffer *fb, PlanarPinholeCamera *ppc,
+                  Vector minP, Vector maxP,
+                  unsigned int color);
 };
