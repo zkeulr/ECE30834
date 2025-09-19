@@ -244,12 +244,12 @@ void TriangleMesh::DrawAABB(FrameBuffer *fb, PlanarPinholeCamera *ppc,
     fb->Draw3DSegment(color, ppc, p010, p011);
 }
 
-void TriangleMesh::Scale(float s)
+void TriangleMesh::Scale(float scaleFactor)
 {
     Vector center = GetCenter();
 
     for (int vi = 0; vi < vertsN; vi++)
     {
-        verts[vi] = center + s * (verts[vi] - center);
+        verts[vi] = center + scaleFactor * (verts[vi] - center);
     }
 }
