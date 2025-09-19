@@ -3,6 +3,9 @@
 The triangle mesh will load as soon as any of the below buttons
 are pressed. Ensure the GUI window is in focus before using the keys.
 
+The planar pinhole camera colors are a bit
+hard to make out against the white background but I promise they're there.
+
 ## GUI
 
 - **W**: Move forward
