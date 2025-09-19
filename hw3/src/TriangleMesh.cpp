@@ -243,3 +243,13 @@ void TriangleMesh::DrawAABB(FrameBuffer *fb, PlanarPinholeCamera *ppc,
     fb->Draw3DSegment(color, ppc, p110, p111);
     fb->Draw3DSegment(color, ppc, p010, p011);
 }
+
+void TriangleMesh::Scale(float s)
+{
+    Vector center = GetCenter();
+
+    for (int vi = 0; vi < vertsN; vi++)
+    {
+        verts[vi] = center + s * (verts[vi] - center);
+    }
+}

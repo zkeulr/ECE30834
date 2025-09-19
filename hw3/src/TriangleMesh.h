@@ -98,4 +98,6 @@ public:
     void DrawAABB(FrameBuffer *fb, PlanarPinholeCamera *ppc,
                   Vector minP, Vector maxP,
                   unsigned int color);
+
+    void Scale(float s);
 };
